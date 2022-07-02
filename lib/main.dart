@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'home_page.dart';
-import 'providers/change_theme.dart';
 
 void main() {
   runApp(MyApp());

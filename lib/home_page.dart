@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:test_counter_app/providers/counter.dart';
+import 'package:test_counter_app/provider/counter.dart';
+import 'package:test_counter_app/provider/weather.dart';
 import 'package:test_counter_app/ui/widgets/floating_action_button.dart';
+import 'provider/change_theme.dart';
 
-import 'providers/change_theme.dart';
+
+
 
 class HomePage extends StatelessWidget {
+  const HomePage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -15,6 +20,8 @@ class HomePage extends StatelessWidget {
         ),
         ChangeNotifierProvider.value(value: ChangesTheme(),
         ),
+        ChangeNotifierProvider.value(value: Weather(),
+        )
       ],
       child: AnimatedBuilder(
           animation: ChangesTheme.instance,
@@ -28,16 +35,24 @@ class HomePage extends StatelessWidget {
                       : Brightness.light,
                   visualDensity: VisualDensity.adaptivePlatformDensity
               ),
-              home: MyHomePage(title: ""),);
+              home: MyHomePage(title: "Counter App"),);
           }
       ),
     );
   }
 }
 
-class MyHomePage extends StatelessWidget {
-  final String title;
-   MyHomePage({required this.title});
+class MyHomePage extends StatefulWidget {
+
+    MyHomePage({required this.title,});
+   final String title;
+
+
+   @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
 
   void _incrementCounter(BuildContext context) {
     Provider.of<Counter>(context, listen: false).incrementCounter();
@@ -46,20 +61,27 @@ class MyHomePage extends StatelessWidget {
   void _decrementCounter(BuildContext context){
     Provider.of<Counter>(context,listen: false).decrementCounter();
   }
-
+  void _weather (BuildContext context){
+    Provider.of<Weather>(context,listen: false).updateWeather([]);
+  }
 
 
   @override
   Widget build(BuildContext context) {
     var counter = Provider.of<Counter>(context).getCounter;
+    var weather = Provider.of<Weather>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: Text(widget.title),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              '$weather'
+            ),
+            const SizedBox(height: 8.0,),
             const Text(
               'You have pushed the button this many times:',
             ),
@@ -72,17 +94,15 @@ class MyHomePage extends StatelessWidget {
       ),
       floatingActionButton: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //crossAxisAlignment: CrossAxisAlignment.end,
         children:<Widget> [
           Column(
-            //crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
-              // FloatingActionButtonWidget(
-              //   onPressed: (){} ,
-              //   tooltip: 'trash',
-              //   child: Icon(Icons.delete),
-              // ),
+              FloatingActionButtonWidget(
+                onPressed: ()=> _weather(context) ,
+                tooltip: 'Weather',
+                child: const Icon(Icons.delete),
+              ),
               // const SizedBox(height: 10,),
               FloatingActionButtonWidget(
                 onPressed: () =>  ChangesTheme.instance.changeTheme(),
@@ -93,7 +113,6 @@ class MyHomePage extends StatelessWidget {
           ),
           Column(
             mainAxisAlignment: MainAxisAlignment.end,
-            // crossAxisAlignment: CrossAxisAlignment.end,
             children:<Widget> [
               FloatingActionButtonWidget(
                 onPressed: () => _incrementCounter(context),
@@ -113,3 +132,4 @@ class MyHomePage extends StatelessWidget {
     );
   }
 }
+

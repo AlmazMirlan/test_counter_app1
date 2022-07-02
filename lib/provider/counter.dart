@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:test_counter_app/providers/change_theme.dart';
+import 'package:test_counter_app/provider/change_theme.dart';
 
 class Counter extends ChangeNotifier {
   var _count = 0;
